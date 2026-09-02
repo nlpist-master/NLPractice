@@ -611,17 +611,164 @@ async function callGemini(messages, system) {
             <section>
               <div className="page-head">
                 <h2>סיכום סשן</h2>
+                <p>הנה תמונת מצב של המפגש והמשוב המקצועי</p>
               </div>
-              {feedbackLoading ? (
-                <div className="loading-block"><div className="spinner" />מנתח נתונים...</div>
-              ) : (
-                <div className="fb-section">
-                  <h3>תקציר משוב</h3>
-                  <p>{feedback?.summary || "המפגש הסתיים בהצלחה."}</p>
+          
+              {/* Session Statistics */}
+              <div className="summary-grid">
+                <div className="stat-card">
+                  <div className="stat-num num">
+                    {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
+                  </div>
+                  <div className="stat-label">משך הסשן</div>
                 </div>
+          
+                <div className="stat-card">
+                  <div className="stat-num num">
+                    {messages.length}
+                  </div>
+                  <div className="stat-label">הודעות בשיחה</div>
+                </div>
+          
+                <div className="stat-card">
+                  <div className="stat-num num">
+                    {messages.filter((m) => m.role === "user").length}
+                  </div>
+                  <div className="stat-label">פניות המתרגל</div>
+                </div>
+          
+                <div className="stat-card">
+                  <div className="stat-num num">
+                    {feedback?.openQuestions ?? 0}
+                  </div>
+                  <div className="stat-label">שאלות פתוחות</div>
+                </div>
+              </div>
+          
+              {feedbackLoading ? (
+                <div className="loading-block">
+                  <div className="spinner" />
+                  מנתח את השיחה ומכין משוב...
+                </div>
+              ) : feedbackError ? (
+                <div className="fb-section">
+                  <h3>שגיאה בהפקת המשוב</h3>
+                  <p className="summary-text">{feedbackError}</p>
+                </div>
+              ) : (
+                <>
+                  {/* Summary */}
+                  <div className="fb-section">
+                    <h3>
+                      <Icon name="file-text" size={18} />
+                      תקציר המפגש
+                    </h3>
+                    <p className="summary-text">
+                      {feedback?.summary || "המפגש הסתיים בהצלחה."}
+                    </p>
+                  </div>
+          
+                  {/* Techniques */}
+                  <div className="fb-section">
+                    <h3>
+                      <Icon name="sparkles" size={18} />
+                      טכניקות שזוהו
+                    </h3>
+          
+                    {feedback?.techniquesUsed?.length ? (
+                      <div>
+                        {feedback.techniquesUsed.map((technique, i) => (
+                          <span key={i} className="technique-chip">
+                            {technique}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="summary-text">
+                        לא זוהו טכניקות באופן חד-משמעי.
+                      </p>
+                    )}
+                  </div>
+          
+                  {/* Strengths */}
+                  <div className="fb-section strengths">
+                    <h3>
+                      <Icon name="check-circle-2" size={18} />
+                      נקודות חוזקה
+                    </h3>
+          
+                    {feedback?.strengths?.length ? (
+                      <ul className="fb-list">
+                        {feedback.strengths.map((item, i) => (
+                          <li key={i}>
+                            <span className="bullet" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="summary-text">
+                        לא התקבלו נקודות חוזקה.
+                      </p>
+                    )}
+                  </div>
+          
+                  {/* Improvements */}
+                  <div className="fb-section improve">
+                    <h3>
+                      <Icon name="target" size={18} />
+                      נקודות לחיזוק
+                    </h3>
+          
+                    {feedback?.improvements?.length ? (
+                      <ul className="fb-list">
+                        {feedback.improvements.map((item, i) => (
+                          <li key={i}>
+                            <span className="bullet" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="summary-text">
+                        לא התקבלו הצעות לשיפור.
+                      </p>
+                    )}
+                  </div>
+          
+                  {/* Question Analysis */}
+                  <div className="fb-section">
+                    <h3>
+                      <Icon name="messages-square" size={18} />
+                      ניתוח שאלות
+                    </h3>
+          
+                    <div className="summary-grid">
+                      <div className="stat-card">
+                        <div className="stat-num num">
+                          {feedback?.openQuestions ?? 0}
+                        </div>
+                        <div className="stat-label">שאלות פתוחות</div>
+                      </div>
+          
+                      <div className="stat-card">
+                        <div className="stat-num num">
+                          {feedback?.closedQuestions ?? 0}
+                        </div>
+                        <div className="stat-label">שאלות סגורות</div>
+                      </div>
+                    </div>
+                  </div>
+                </>
               )}
+          
               <div className="actions-row">
-                <button className="btn-secondary" onClick={() => setScreen("choose")}>תרגול נוסף</button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => setScreen("choose")}
+                >
+                  תרגול נוסף
+                </button>
               </div>
             </section>
           )}
