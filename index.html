@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NLPractice - מרחב תרגול למאמני NLP</title>
+
+  <!-- React & React DOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+  <!-- Babel Standalone for inline JSX parsing -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Assistant:wght@400;500;600;700&family=Heebo:wght@400;500;700&display=swap" />
+
+  <style>
+    :root {
+      --ink: #1E2A32;
+      --ink-2: #263643;
+      --ink-3: #31424C;
+      --paper: #F6F1E7;
+      --paper-2: #EFE8D8;
+      --amber: #D9A45B;
+      --teal: #7FB3AA;
+      --text-light: #F3EFE6;
+      --text-dark: #253038;
+      --muted: #9FB0B8;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Assistant', sans-serif;
+      background: var(--ink);
+      color: var(--text-light);
+      min-height: 100vh;
+    }
+
+    h1, h2, h3 { font-family: 'Frank Ruhl Libre', serif; margin: 0; }
+    .num { font-family: 'Heebo', sans-serif; font-variant-numeric: tabular-nums; }
+    .shell { max-width: 980px; margin: 0 auto; padding: 20px 24px 60px; }
+
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 6px 0 22px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mark {
+      width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--amber);
+      display: flex; align-items: center; justify-content: center; color: var(--amber);
+    }
+    .brand-word { font-family: 'Frank Ruhl Libre', serif; font-size: 21px; font-weight: 700; letter-spacing: 0.5px; }
+    .brand-sub { font-size: 11px; color: var(--muted); margin-top: -2px; }
+
+    .stepper { display: flex; align-items: center; gap: 6px; }
+    .step { display: flex; align-items: center; gap: 6px; opacity: 0.45; }
+    .step-active { opacity: 1; }
+    .step-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+    .step-active .step-dot { background: var(--amber); }
+    .step-label { font-size: 12px; display: none; }
+    @media (min-width: 720px) { .step-label { display: inline; } }
+    .step-line { width: 18px; height: 1px; background: rgba(246,241,231,0.2); }
+    .step-line-active { background: var(--amber); }
+
+    .hero { position: relative; padding: 56px 8px 20px; text-align: center; overflow: hidden; }
+    .hero-ring {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%);
+      width: 480px; height: 480px; border-radius: 50%; border: 1px solid rgba(217,164,91,0.18);
+      pointer-events: none;
+    }
+    .hero-ring::before {
+      content: ''; position: absolute; inset: 40px; border-radius: 50%;
+      border: 1px solid rgba(127,179,170,0.15);
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; color: var(--teal);
+      font-size: 13px; letter-spacing: 0.5px; margin-bottom: 18px; position: relative;
+    }
+    .hero h1 { font-size: clamp(34px, 6vw, 54px); line-height: 1.15; font-weight: 900; position: relative; }
+    .hero h1 span { color: var(--amber); }
+    .hero p.lead {
+      max-width: 560px; margin: 20px auto 0; color: var(--text-light);
+      font-size: 17px; line-height: 1.8; opacity: 0.85; position: relative;
+    }
+    .cta-row { margin-top: 34px; position: relative; }
+    .btn-primary {
+      background: var(--amber); color: var(--ink); border: none; font-family: 'Assistant', sans-serif;
+      font-weight: 700; font-size: 16px; padding: 14px 34px; border-radius: 999px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 10px; transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 8px 24px rgba(217,164,91,0.25);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(217,164,91,0.35); }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 64px; }
+    .feature-card { background: var(--ink-2); border: 1px solid rgba(246,241,231,0.08); border-radius: 16px; padding: 22px 20px; text-align: right; }
+    .feature-card .icon-wrap {
+      width: 38px; height: 38px; border-radius: 10px; background: rgba(127,179,170,0.15);
+      color: var(--teal); display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+    }
+    .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 13.5px; color: var(--muted); line-height: 1.7; margin: 0; }
+
+    .page-head { text-align: center; margin-bottom: 34px; }
+    .page-head h2 { font-size: 30px; font-weight: 700; }
+    .page-head p { color: var(--muted); margin-top: 10px; font-size: 15px; }
+
+    .client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; }
+    .client-card {
+      background: var(--paper); color: var(--text-dark); border-radius: 18px; padding: 22px;
+      text-align: right; cursor: pointer; border: 1px solid transparent; transition: transform 0.15s ease, border-color 0.15s ease;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .client-card:hover { transform: translateY(-4px); border-color: var(--amber); }
+    .client-top { display: flex; align-items: center; gap: 12px; }
+    .avatar-ring { border-radius: 50%; padding: 2px; flex-shrink: 0; overflow: hidden; }
+    .avatar-ring.avatar-amber { background: var(--amber); }
+    .avatar-ring.avatar-teal { background: var(--teal); }
+
+    .back-btn {
+      background: transparent; border: none; color: var(--muted); font-size: 13.5px; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 8px 4px; margin-bottom: 6px;
+    }
+    .back-btn:hover { color: var(--amber); }
+
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15,20,24,0.6); display: flex; align-items: center;
+      justify-content: center; z-index: 50; padding: 20px;
+    }
+    .modal-box { background: var(--paper); color: var(--text-dark); border-radius: 18px; padding: 26px; max-width: 380px; width: 100%; text-align: center; }
+    .modal-box h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .modal-box p { font-size: 14px; color: #5A6169; line-height: 1.7; margin-bottom: 22px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: center; }
+    .modal-btn-danger { background: var(--ink); color: var(--paper); border: none; border-radius: 999px; padding: 10px 18px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+    .modal-btn-ghost { background: transparent; border: 1.5px solid rgba(37,48,56,0.25); color: var(--text-dark); border-radius: 999px; padding: 10px 18px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+
+    .client-name { font-weight: 700; font-size: 17px; }
+    .client-role { font-size: 12.5px; color: #6B7680; }
+    .client-field-label { font-size: 11px; color: #8A8378; letter-spacing: 0.3px; margin-bottom: 3px; }
+    .client-field-value { font-size: 13.5px; line-height: 1.6; }
+    .trait-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+    .trait-chip { font-size: 11px; padding: 4px 10px; border-radius: 999px; background: rgba(37,48,56,0.07); color: #4A5158; }
+    .choose-btn {
+      margin-top: 6px; align-self: flex-start; background: var(--ink); color: var(--paper);
+      border: none; border-radius: 999px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+
+    .chat-header { display: flex; align-items: center; justify-content: space-between; background: var(--ink-2); border-radius: 18px; padding: 14px 18px; margin-bottom: 16px; }
+    .chat-header-left { display: flex; align-items: center; gap: 12px; }
+    .chat-header .client-name { color: var(--text-light); font-size: 16px; }
+    .chat-header .client-role { color: var(--muted); }
+    .timer-ring { position: relative; display: flex; align-items: center; justify-content: center; }
+    .timer-text { position: absolute; font-family: 'Heebo', sans-serif; font-weight: 700; color: var(--text-light); }
+    .end-btn { background: transparent; border: 1.5px solid rgba(246,241,231,0.35); color: var(--text-light); border-radius: 999px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .end-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+    .chat-window { background: var(--paper); border-radius: 18px; padding: 20px; height: 440px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+    .bubble-row { display: flex; }
+    .bubble-row.user { justify-content: flex-start; }
+    .bubble-row.client { justify-content: flex-end; }
+    .bubble { max-width: 72%; padding: 12px 16px; border-radius: 16px; font-size: 14.5px; line-height: 1.7; }
+    .bubble.user { background: var(--ink); color: var(--text-light); border-bottom-left-radius: 4px; }
+    .bubble.client { background: var(--paper-2); color: var(--text-dark); border: 1px solid rgba(37,48,56,0.08); border-bottom-right-radius: 4px; }
+    .bubble.typing { color: #8A8378; font-style: italic; }
+
+    .chat-input-row { margin-top: 14px; display: flex; gap: 10px; align-items: flex-end; }
+    .chat-input-row textarea {
+      flex: 1; resize: none; border-radius: 14px; border: 1px solid rgba(246,241,231,0.15);
+      background: var(--ink-2); color: var(--text-light); padding: 12px 16px; font-size: 14.5px;
+      font-family: 'Assistant', sans-serif; min-height: 48px; max-height: 120px; line-height: 1.6;
+    }
+    .chat-input-row textarea:focus { outline: 1.5px solid var(--amber); }
+    .send-btn { background: var(--amber); border: none; color: var(--ink); border-radius: 14px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .chat-error { margin-top: 10px; color: #E39B8E; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+    @media (max-width: 640px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card { background: var(--ink-2); border-radius: 16px; padding: 18px; text-align: center; }
+    .stat-num { font-family: 'Heebo', sans-serif; font-size: 28px; font-weight: 700; color: var(--amber); }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .fb-section { background: var(--paper); color: var(--text-dark); border-radius: 18px; padding: 24px; margin-bottom: 16px; }
+    .fb-section h3 { font-size: 16px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .fb-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .fb-list li { font-size: 14px; line-height: 1.7; display: flex; gap: 8px; }
+    .fb-list li .bullet { flex-shrink: 0; margin-top: 6px; width: 6px; height: 6px; border-radius: 50%; }
+    .strengths .bullet { background: var(--teal); }
+    .improve .bullet { background: var(--amber); }
+    .technique-chip { display: inline-block; font-size: 12.5px; padding: 6px 14px; border-radius: 999px; background: rgba(37,48,56,0.07); margin: 0 0 8px 8px; }
+    .summary-text { font-size: 14.5px; line-height: 1.8; color: #4A5158; }
+
+    .loading-block { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 40px 0; color: var(--muted); }
+    .spinner { width: 30px; height: 30px; border-radius: 50%; border: 3px solid rgba(217,164,91,0.25); border-top-color: var(--amber); animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .actions-row { display: flex; justify-content: center; margin-top: 30px; }
+    .btn-secondary { background: transparent; border: 1.5px solid var(--amber); color: var(--amber); border-radius: 999px; padding: 12px 28px; font-size: 15px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-secondary:hover { background: rgba(217,164,91,0.12); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // SVG Icon Wrapper Component using Lucide
+    const Icon = ({ name, size = 18, color = "currentColor", style = {} }) => {
+      const ref = useRef(null);
+      useEffect(() => {
+        if (ref.current) {
+          ref.current.innerHTML = `<i data-lucide="${name}" style="width:${size}px; height:${size}px; stroke:${color}; display:inline-block;"></i>`;
+          lucide.createIcons({
+            attrs: { stroke: color, 'stroke-width': 2 },
+            nameAttr: 'data-lucide'
+          });
+        }
+      }, [name, size, color]);
+      return <span ref={ref} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', ...style }} />;
+    };
+
+    const CLIENTS = [
+      {
+        id: "dani",
+        name: "דני כהן",
+        age: 34,
+        role: "מנהל צוות בחברת הייטק",
+        background: "טיפס בסולם הניהולי מהר מאוד ותמיד היה \"האחראי\" שסומכים עליו. עובד שעות ארוכות ומרגיש שאסור לו להיראות חלש.",
+        challenge: "שחיקה וקושי להציב גבולות — לוקח על עצמו יותר ממה שהוא יכול לשאת.",
+        traits: ["פרפקציוניסט", "מנומס אך סגור", "מתקשה לגעת ברגש", "עונה בקצרה"],
+        accent: "amber",
+        avatar: "ד",
+        face: { skin: "#EDB98A", hair: "#4A312C", hairStyle: "short", facial: "none", bg: "#D9A45B" },
+        opening: "היי, תודה שהסכמת להיפגש. אני חייב להגיד — אין לי הרבה זמן היום, יש לי עוד ישיבה בעוד חצי שעה. אז... נגיד שהכול בסדר, פשוט קצת עמוס לאחרונה."
+      },
+      {
+        id: "avi",
+        name: "אבי לוי",
+        age: 45,
+        role: "יועץ עסקי עצמאי",
+        background: "עבר גירושין לפני כשנתיים ומגדל שני ילדים לבד בסופי שבוע. עסק בעצמו הרבה שנים ורגיל לפתור בעיות של אחרים.",
+        challenge: "קושי מהותי בקבלת החלטות — מתלבט שוב ושוב ונתקע.",
+        traits: ["דברן", "מספר סיפורים צדדיים", "נמנע מהעומק", "מפזר בדיחות כשמתקרבים לרגש"],
+        accent: "teal",
+        avatar: "א",
+        face: { skin: "#D08B5B", hair: "#724133", hairStyle: "wavy", facial: "stubble", facialColor: "#724133", bg: "#7FB3AA" },
+        opening: "וואו, טוב שאני פה בכלל, כמעט ביטלתי — היה לי בוקר משוגע. אתה יודע מה, בוא נתחיל, יש לי בעצם כמה נושאים, אז תעצור אותי אם אני מתפזר, אני נוטה לזה."
+      },
+      {
+        id: "yossi",
+        name: "יוסי מזרחי",
+        age: 28,
+        role: "סטודנט לתואר שני ברפואה",
+        background: "תלמיד מצטיין כל חייו, נמצא תחת לחץ אקדמי גבוה. קול פנימי מאוד ביקורתי כלפי עצמו.",
+        challenge: "חרדת ביצוע לפני מבחנים ומצגות, עד כדי הימנעות.",
+        traits: ["רגיש", "מגונן על עצמו", "נוטה להצטדק", "מדבר מהר כשהוא לחוץ"],
+        accent: "amber",
+        avatar: "י",
+        face: { skin: "#EDB98A", hair: "#2C1B18", hairStyle: "curly", facial: "none", bg: "#D9A45B" },
+        opening: "היי... סליחה שאני קצת מתוח, פשוט יש לי מבחן בעוד שבועיים וכבר עכשיו אני לא ישן טוב. לא יודע בדיוק מה אתה יכול לעשות עם זה, אבל אמרו לי שכדאי לנסות."
+      },
+      {
+        id: "moshe",
+        name: "משה אברהמי",
+        age: 52,
+        role: "בעל מוסך",
+        background: "נשוי 25 שנה. מרגיש שהזוגיות שלו \"נתקעה\" ושאין באמת תקשורת בבית יותר.",
+        challenge: "קושי לבטא רגשות — מגיב בכעס כשהוא מרגיש לא מובן.",
+        traits: ["ישיר", "מתגונן במהירות", "לא אוהב \"לפלפל\"", "נסגר אם מרגיש שיפוטיות"],
+        accent: "teal",
+        avatar: "מ",
+        face: { skin: "#AE5D29", hair: "#E8E1E1", hairStyle: "sidesGrey", facial: "beard", facialColor: "#E8E1E1", bg: "#7FB3AA" },
+        opening: "תשמע, אני לא יודע כמה זה יעזור, אני לא ממש איש של דיבורים על רגשות. אשתי היא זו שאמרה שכדאי שאבוא. בקיצור — יש בעיה בבית ואני לא יודע איך לתקן אותה."
+      },
+      {
+        id: "roi",
+        name: "רועי שרון",
+        age: 39,
+        role: "מאמן כושר אישי",
+        background: "בתחום כבר 15 שנה ומתחיל לשקול לעזוב, בלי מושג ברור מה הלאה. חי בקצב מהיר.",
+        challenge: "פחד משינוי קריירה וקושי להתמקד במטרה אחת.",
+        traits: ["אנרגטי", "חיובי כלפי חוץ", "קופץ בין נושאים", "מתקשה עם שקט"],
+        accent: "amber",
+        avatar: "ר",
+        face: { skin: "#FFDBB4", hair: "#2C1B18", hairStyle: "short", facial: "moustache", facialColor: "#2C1B18", bg: "#D9A45B" },
+        opening: "אחי, מה נשמע! טוב שקבענו, כי יש לי כאלה כמה מחשבות בראש לאחרונה — אולי לפתוח סטודיו משלי, אולי לעבור לתחום אחר לגמרי, אולי סתם אני מוגזם. איפה מתחילים?"
+      }
+    ];
+
+    async function callGemini(messages, system) {
+      const API_KEY = ""; // הדביקו את מפתח ה-API שלכם מכלי Google AI Studio כאן במידת הצורך
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+      const contents = messages.map((m) => ({
+        role: m.role === "assistant" ? "model" : "user",
+        parts: [{ text: typeof m.content === "string" ? m.content : JSON.stringify(m.content) }],
+      }));
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: system }] },
+          contents: contents,
+        }),
+      });
+
+      const data = await response.json();
+      if (data?.error) throw new Error(data.error.message || "API error");
+
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      return text || "";
+    }
+
+    function buildClientSystemPrompt(client) {
+      return `אתה משחק דמות של "לקוח מדומה" בסימולציית תרגול לסטודנטים למאמנות NLP.
+הדמות שאתה מגלם: ${client.name}, גיל: ${client.age}, תפקיד: ${client.role}. ${client.background}
+האתגר: ${client.challenge}. תכונות: ${client.traits.join(", ")}
+כללים: דבר בעברית, בגוף ראשון, תגובות קצרות וטבעיות (2-4 משפטים), אל תצא מהדמות.`;
+    }
+
+    function buildFeedbackPrompt(client) {
+      return `אתה מדריך על (supervisor) מנוסה להכשרת מאמני NLP. נתח את תמלול השיחה עם ${client.name} והחזר אובייקט JSON בלבד במבנה:
+{
+  "openQuestions": 0,
+  "closedQuestions": 0,
+  "techniquesUsed": ["שם טכניקה"],
+  "strengths": ["משפט חוזק"],
+  "improvements": ["משפט לשיפור"],
+  "summary": "פסקה מסכמת"
+}`;
+    }
+
+    const STEPS = ["בית", "בחירת לקוח", "שיחה", "סיכום"];
+
+    function Stepper({ current }) {
+      return (
+        <div className="stepper" aria-hidden="true">
+          {STEPS.map((label, i) => (
+            <React.Fragment key={label}>
+              <div className={"step" + (i <= current ? " step-active" : "")}>
+                <span className="step-dot" />
+                <span className="step-label">{label}</span>
+              </div>
+              {i < STEPS.length - 1 && (
+                <span className={"step-line" + (i < current ? " step-line-active" : "")} />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      );
+    }
+
+    function Avatar({ face, size = 46 }) {
+      const { skin, hair, hairStyle, facial, facialColor, bg } = face;
+      const hairPaths = {
+        short: <path d="M22 42 Q22 12 50 12 Q78 12 78 42 L78 30 Q78 18 50 18 Q22 18 22 30 Z" fill={hair} />,
+        wavy: <path d="M20 44 Q18 14 50 12 Q82 14 80 44 L79 32 Q76 20 68 24 Q64 16 50 16 Q36 16 32 24 Q24 20 21 32 Z" fill={hair} />,
+        curly: (
+          <g fill={hair}>
+            <path d="M23 40 Q22 14 50 13 Q78 14 77 40 L77 28 Q78 16 50 17 Q22 16 23 28 Z" />
+            <circle cx="26" cy="26" r="6" />
+            <circle cx="36" cy="17" r="6.5" />
+            <circle cx="50" cy="14" r="7" />
+            <circle cx="64" cy="17" r="6.5" />
+            <circle cx="74" cy="26" r="6" />
+          </g>
+        ),
+        sidesGrey: (
+          <g fill={hair}>
+            <path d="M21 34 Q20 20 30 15 Q26 24 27 36 Z" />
+            <path d="M79 34 Q80 20 70 15 Q74 24 73 36 Z" />
+          </g>
+        ),
+      };
+
+      return (
+        <svg viewBox="0 0 100 100" width={size} height={size}>
+          <circle cx="50" cy="50" r="50" fill={bg} />
+          <path d="M50 66 C 30 66 18 84 18 100 L82 100 C82 84 70 66 50 66 Z" fill={skin} opacity="0.95" />
+          <circle cx="25" cy="48" r="4.5" fill={skin} />
+          <circle cx="75" cy="48" r="4.5" fill={skin} />
+          <circle cx="50" cy="42" r="23" fill={skin} />
+          {hairPaths[hairStyle]}
+          <rect x="37" y="38" width="9" height="2.4" rx="1.2" fill="#3A2E28" />
+          <rect x="54" y="38" width="9" height="2.4" rx="1.2" fill="#3A2E28" />
+          <circle cx="41.5" cy="44" r="1.8" fill="#2A2320" />
+          <circle cx="58.5" cy="44" r="1.8" fill="#2A2320" />
+          <path d="M41 58 Q50 63 59 58" stroke="#5A3A30" strokeWidth="2" fill="none" strokeLinecap="round" />
+        </svg>
+      );
+    }
+
+    function TimerRing({ seconds, size = 56 }) {
+      const radius = (size - 6) / 2;
+      const circumference = 2 * Math.PI * radius;
+      const pct = Math.min((seconds % 300) / 300, 1);
+      const offset = circumference * (1 - pct);
+      const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+      const ss = String(seconds % 60).padStart(2, "0");
+      return (
+        <div className="timer-ring" style={{ width: size, height: size }}>
+          <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+            <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(246,241,231,0.15)" strokeWidth="3" />
+            <circle
+              cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="var(--amber)" strokeWidth="3"
+              strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset}
+              transform={`rotate(-90 ${size / 2} ${size / 2})`} style={{ transition: "stroke-dashoffset 1s linear" }}
+            />
+          </svg>
+          <span className="timer-text" style={{ fontSize: size * 0.24 }}>{mm}:{ss}</span>
+        </div>
+      );
+    }
+
+    function NLPractice() {
+      const [screen, setScreen] = useState("home");
+      const [selectedClient, setSelectedClient] = useState(null);
+      const [messages, setMessages] = useState([]);
+      const [apiHistory, setApiHistory] = useState([]);
+      const [input, setInput] = useState("");
+      const [sending, setSending] = useState(false);
+      const [chatError, setChatError] = useState(null);
+      const [seconds, setSeconds] = useState(0);
+      const [feedback, setFeedback] = useState(null);
+      const [feedbackLoading, setFeedbackLoading] = useState(false);
+      const [feedbackError, setFeedbackError] = useState(null);
+      const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+      const scrollRef = useRef(null);
+      const timerRef = useRef(null);
+
+      useEffect(() => {
+        if (screen === "chat") {
+          timerRef.current = setInterval(() => setSeconds((s) => s + 1), 1000);
+          return () => clearInterval(timerRef.current);
+        }
+      }, [screen]);
+
+      useEffect(() => {
+        if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }, [messages, sending]);
+
+      function startWithClient(client) {
+        setSelectedClient(client);
+        setMessages([{ role: "client", text: client.opening }]);
+        setApiHistory([
+          { role: "user", content: `(תחילת המפגש: "${client.opening}")` },
+          { role: "assistant", content: client.opening },
+        ]);
+        setSeconds(0);
+        setFeedback(null);
+        setScreen("chat");
+      }
+
+      async function sendMessage() {
+        const text = input.trim();
+        if (!text || sending || !selectedClient) return;
+        setInput("");
+        setChatError(null);
+        const newDisplay = [...messages, { role: "user", text }];
+        const newHistory = [...apiHistory, { role: "user", content: text }];
+        setMessages(newDisplay);
+        setApiHistory(newHistory);
+        setSending(true);
+        try {
+          const reply = await callGemini(newHistory, buildClientSystemPrompt(selectedClient));
+          setMessages((m) => [...m, { role: "client", text: reply || "..." }]);
+          setApiHistory((h) => [...h, { role: "assistant", content: reply || "..." }]);
+        } catch (err) {
+          setChatError("שגיאה בתקשורת עם AI. אנא נסה שוב.");
+        } finally {
+          setSending(false);
+        }
+      }
+
+      async function endSession() {
+        clearInterval(timerRef.current);
+        setScreen("summary");
+        setFeedbackLoading(true);
+        const transcript = messages.map((m) => `${m.role}: ${m.text}`).join("\n");
+        try {
+          const raw = await callGemini([{ role: "user", content: transcript }], buildFeedbackPrompt(selectedClient));
+          const parsed = JSON.parse(raw.replace(/```json|```/g, "").trim());
+          setFeedback(parsed);
+        } catch (err) {
+          setFeedbackError("לא ניתן להפיק משוב כרגע.");
+        } finally {
+          setFeedbackLoading(false);
+        }
+      }
+
+      const stepIndex = { home: 0, choose: 1, chat: 2, summary: 3 }[screen];
+
+      return (
+        <div className="shell">
+          <div className="topbar">
+            <div className="brand">
+              <span className="brand-mark"><Icon name="ear" size={16} /></span>
+              <div>
+                <div className="brand-word">NLPractice</div>
+                <div className="brand-sub">מרחב תרגול למאמני NLP</div>
+              </div>
+            </div>
+            <Stepper current={stepIndex} />
+          </div>
+
+          {screen === "home" && (
+            <section className="hero">
+              <div className="hero-ring" />
+              <div className="hero-eyebrow">
+                <Icon name="sparkles" size={14} /> סימולטור טיפולי מבוסס AI
+              </div>
+              <h1>תרגלו הקשבה אמיתית,<br />עם <span>לקוח שמגיב אליכם</span></h1>
+              <p className="lead">NLPractice הוא חדר תרגול בטוח לסטודנטים ומתחילים בעולם ה-NLP והקואצ'ינג.</p>
+              <div className="cta-row">
+                <button className="btn-primary" onClick={() => setScreen("choose")}>
+                  בואו נתחיל <Icon name="arrow-left" size={18} />
+                </button>
+              </div>
+              <div className="feature-grid">
+                <div className="feature-card">
+                  <div className="icon-wrap"><Icon name="message-circle" size={18} /></div>
+                  <h3>שיחה חיה</h3>
+                  <p>הלקוח מגיב בזמן אמת לאיכות השאלות וההקשבה.</p>
+                </div>
+                <div className="feature-card">
+                  <div className="icon-wrap"><Icon name="clock" size={18} /></div>
+                  <h3>מרחב מוגן</h3>
+                  <p>תרגול מבוסס זמן ללא חשש מטעויות.</p>
+                </div>
+                <div className="feature-card">
+                  <div className="icon-wrap"><Icon name="check-circle-2" size={18} /></div>
+                  <h3>משוב מפורט</h3>
+                  <p>ניתוח אוטומטי בסוף המפגש לשיפור מיומנויות.</p>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {screen === "choose" && (
+            <section>
+              <button className="back-btn" onClick={() => setScreen("home")}>
+                <Icon name="arrow-left" size={15} style={{ transform: "scaleX(-1)" }} /> חזרה
+              </button>
+              <div className="page-head">
+                <h2>בחרו מטופל לתרגול</h2>
+              </div>
+              <div className="client-grid">
+                {CLIENTS.map((c) => (
+                  <div key={c.id} className="client-card" onClick={() => startWithClient(c)}>
+                    <div className="client-top">
+                      <div className={"avatar-ring avatar-" + c.accent}>
+                        <Avatar face={c.face} size={46} />
+                      </div>
+                      <div>
+                        <div className="client-name">{c.name}, {c.age}</div>
+                        <div className="client-role">{c.role}</div>
+                      </div>
+                    </div>
+                    <div><div className="client-field-value">{c.challenge}</div></div>
+                    <button className="choose-btn">התחילו שיחה <Icon name="arrow-left" size={14} /></button>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {screen === "chat" && selectedClient && (
+            <section>
+              <div className="chat-header">
+                <div className="chat-header-left">
+                  <Avatar face={selectedClient.face} size={44} />
+                  <div>
+                    <div className="client-name">{selectedClient.name}</div>
+                    <div className="client-role">{selectedClient.role}</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <TimerRing seconds={seconds} />
+                  <button className="end-btn" onClick={endSession}>סיום ומשוב</button>
+                </div>
+              </div>
+
+              <div className="chat-window" ref={scrollRef}>
+                {messages.map((m, i) => (
+                  <div key={i} className={"bubble-row " + m.role}>
+                    <div className={"bubble " + m.role}>{m.text}</div>
+                  </div>
+                ))}
+                {sending && <div className="bubble client typing">מקליד/ה...</div>}
+              </div>
+
+              <div className="chat-input-row">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage())}
+                  placeholder="כתבו תגובה..."
+                />
+                <button className="send-btn" onClick={sendMessage} disabled={sending || !input.trim()}>
+                  <Icon name="send" size={18} />
+                </button>
+              </div>
+            </section>
+          )}
+
+          {screen === "summary" && (
+            <section>
+              <div className="page-head">
+                <h2>סיכום סשן</h2>
+              </div>
+              {feedbackLoading ? (
+                <div className="loading-block"><div className="spinner" />מנתח נתונים...</div>
+              ) : (
+                <div className="fb-section">
+                  <h3>תקציר משוב</h3>
+                  <p>{feedback?.summary || "המפגש הסתיים בהצלחה."}</p>
+                </div>
+              )}
+              <div className="actions-row">
+                <button className="btn-secondary" onClick={() => setScreen("choose")}>תרגול נוסף</button>
+              </div>
+            </section>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<NLPractice />);
+  </script>
+</body>
+</html>
