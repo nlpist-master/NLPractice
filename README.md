@@ -1,90 +1,96 @@
 # NLPractice
 
-NLPractice הוא סביבה אינטראקטיבית לתרגול מיומנויות של מאמני NLP (Natural Language Processing) באמצעות דיאלוג עם "לקוח מדומה" שמופעל על ידי מודל AI.
+NLPractice is an interactive training environment for practicing NLP (Natural Language Processing) coaching skills through conversation with an AI-powered simulated client.
 
-הפרויקט מאפשר למתרגל לבחור לקוח, לנהל שיחה בזמן אמת, ולבסוף לקבל משוב מקצועי על איכות השאלות, ההקשבה, הטכניקות והנקודות לחיזוק.
+The project allows a learner to choose a client, conduct a live conversation, and receive professional feedback on question quality, listening, techniques, and areas for improvement.
 
-## תכונות עיקריות
+## Live Demo
 
-- בחירת לקוח/תסריט תרגול
-- שיחה חיה מול לקוח AI
-- סימולציית מפגש עם זמן וחיווי של מצב השיחה
-- ניתוח אוטומטי של השיחה בסיום המפגש
-- משוב מפורט על:
-  - שאלות פתוחות/סגורות
-  - טכניקות מזוהות
-  - נקודות חוזק
-  - נקודות לחיזוק
-  - סיכום מפגש
+The project is already deployed and running live at:
 
-## הטכנולוגיות
+https://nlpractice.vercel.app/
+
+## Key Features
+
+- Client and scenario selection for practice
+- Live chat with an AI client
+- Session timer and interaction flow
+- Automatic analysis at the end of the session
+- Detailed feedback on:
+  - Open and closed questions
+  - Identified techniques
+  - Strengths
+  - Improvement areas
+  - Session summary
+
+## Technologies
 
 - HTML
 - JavaScript
-- React (מטעינת CDN)
-- Tailwind CSS (מטעינה באמצעות CDN)
+- React (loaded via CDN)
+- Tailwind CSS (loaded via CDN)
 - Babel Standalone
 - Gemini API (Google Generative AI)
 
-## מבנה הפרויקט
+## Project Structure
 
 ```text
 NLPractice/
 ├── api/
-│   └── gemini.js        # API route שמתקשר ל-Gemini
-├── index.html           # ממשק המשתמש הראשי
-├── README.md            # תיעוד הפרויקט
-└── .gitignore           # אם קיים בסביבה שלך
+│   └── gemini.js        # API route that communicates with Gemini
+├── index.html           # Main user interface
+├── README.md            # Project documentation
+└── .gitignore           # If present in your environment
 ```
 
-## איך מפעילים את הפרויקט
+## How to Run the Project
 
-### 1) קבלת מפתח API של Gemini
+### 1) Get a Gemini API key
 
-צור חשבון/גישה ל-Google AI Studio או ל-Google Cloud, ואל תשכח להפעיל את המפתח:
+Create an account or access your Google AI Studio / Google Cloud project and generate a Gemini API key.
 
 ```bash
 GEMINI_API_KEY=your_api_key_here
 ```
 
-### 2) הרצה מקומית
+### 2) Run locally
 
-הפרויקט מבוסס על frontend סטטי + API serverless. הדרך הפשוטה ביותר להריץ אותו היא באמצעות Vercel:
+This project is based on a static frontend plus a serverless API. The simplest way to run it is with Vercel:
 
 ```bash
 npm install -g vercel
 vercel
 ```
 
-לאחר מכן הגדר את משתנה הסביבה `GEMINI_API_KEY` דרך לוח הבקרה של Vercel או באמצעות קובץ `.env.local` במקרה של סביבת פיתוח תואמת.
+Then configure the `GEMINI_API_KEY` environment variable in the Vercel dashboard or via a local `.env.local` file when using a compatible development setup.
 
-### 3) פתיחת האפליקציה
+### 3) Open the application
 
-לאחר שהפרויקט פועל, פתח את כתובת ההפעלה של Vercel (או את השרת המקומי) כדי להתחיל לתרגל.
+Once the project is running, open the generated Vercel URL or your local server address to start practicing.
 
-## תהליך השימוש
+## Usage Flow
 
-1. בוחרים ל��וח לתרגול.
-2. מתחילים שיחה עם הלקוח המדומה.
-3. מתמקדים בהקשבה טובה, בשאלות נכונות ובניסוח מדויק.
-4. בסוף המפגש לוחצים על "סיום ומשוב".
-5. מקבלים ניתוח של האינטראקציה והמלצות לשיפור.
+1. Choose a client for practice.
+2. Start a conversation with the simulated client.
+3. Focus on active listening, good questions, and clear phrasing.
+4. End the session by clicking "End & Feedback".
+5. Review the AI-generated analysis and recommendations.
 
-## הערות
+## Notes
 
-- הפרויקט נוצר במיוחד עבור תרגול של ריאיון/שיחה טיפולית-אישית באמצעות AI.
-- הוא מתאים לשימוש כמצע הוראה, סימולציה, או תרגול אישי.
-- מכיוון שהממשק הוא מבוסס HTML/JS ללא build system, הוא קל מאוד להרחבה ולהטמעה.
+- The project was created specifically for practicing NLP coaching and therapeutic-style conversations with AI.
+- It is suitable for teaching, simulation, and personal training.
+- Because the interface is built with HTML/JavaScript without a build system, it is easy to extend and deploy.
 
-## קישורים שימושיים
+## Useful Links
 
 - Google AI Studio: https://aistudio.google.com/
 - Vercel: https://vercel.com/
 
-## רישיון
+## License
 
-אם אין קובץ רישיון ממוסד בפרויקט, ניתן להוסיף אחד בהמשך לפי הצורך (למשל MIT).
+If no formal project license is included, you can add one later as needed (for example, MIT).
 
 ---
 
-אם תרצה, אני יכול גם לייצר לך גרסה יותר מפורטת של ה-README בעברית או באנגלית, או להוסיף דוגמת שימוש, תהליך התקנה, ולוגו/כרטיס ברירת מחדל לפרויקט.
+If you want, I can also generate a more polished version of the README with badges, screenshots placeholders, and a cleaner GitHub-style layout.
