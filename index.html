@@ -294,18 +294,27 @@
     ];
 
 async function callGemini(messages, system) {
-  const response = await fetch("/api/gemini", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      messages,
-      system
-    })
-  });
+  // Never wait forever: the server tries several models within ~50s.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 65000);
+  let response;
+  try {
+    response = await fetch("/api/gemini", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        messages,
+        system
+      }),
+      signal: controller.signal
+    });
+  } finally {
+    clearTimeout(timer);
+  }
 
-  const data = await response.json();
+  const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
     throw new Error(data?.error || "API error");
